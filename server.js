@@ -15,15 +15,21 @@ app.use(bodyParser.json());
 app.post('/go-verify', async (req, res) => {
 
   try {
-    const response = await got('https://www.google.com/recaptcha/api/siteverify');
+    const response = await got.post('https://www.google.com/recaptcha/api/siteverify', {
+      json: {
+        secret: '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ',
+        response: req.body,
+      },
+      responseType: 'json',
+    });
+
     console.log(response.body);
-    const msg = response;
+    return res.json({ response });
   } catch (error) {
     console.log(error.response.body);
-    const msg = error.response;
+    return res.json({ response: error.response });
   }
 
-  return res.json({ response: msg });
 });
 
 app.use('/', (req, res) =>
