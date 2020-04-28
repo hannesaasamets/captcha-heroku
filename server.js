@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const {PORT = 3333} = process.env;
 const app = express();
+const got = require('got');
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -11,8 +12,18 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
-app.post('/go-verify', (req, res) => {
-  return res.json({requestBody: req.body});
+app.post('/go-verify', async (req, res) => {
+
+  try {
+    const response = await got('https://www.google.com/recaptcha/api/siteverify');
+    console.log(response.body);
+    const msg = response;
+  } catch (error) {
+    console.log(error.response.body);
+    const msg = error.response;
+  }
+
+  return res.json({ response: msg });
 });
 
 app.use('/', (req, res) =>
@@ -20,5 +31,5 @@ app.use('/', (req, res) =>
 );
 
 app.listen(PORT, () => {
-  console.log(`Listening on ${PORT}`);
+  console.log(`🍏 Listening on ${PORT}`);
 });
