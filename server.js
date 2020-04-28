@@ -12,11 +12,11 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
-app.post('/go-verify', async ({ body }, res) => {
+app.post('/go-verify', async ({ body: { response } }, res) => {
 
   const payload = {
     secret: '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ',
-    ...body, // response token
+    response,
   };
   console.log('💼 payload', payload);
 
