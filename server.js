@@ -16,7 +16,7 @@ app.post('/go-verify', async (req, res) => {
 
   const payload = {
     secret: '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ',
-    response: req.body,
+    ...req.body, // response token
   };
   console.log('💼 payload', payload);
 
