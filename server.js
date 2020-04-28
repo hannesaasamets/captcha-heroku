@@ -14,12 +14,15 @@ app.use(bodyParser.json());
 
 app.post('/go-verify', async (req, res) => {
 
+  const payload = {
+    secret: '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ',
+    response: req.body,
+  };
+  console.log('💼 payload', payload);
+
   try {
     const response = await got.post('https://www.google.com/recaptcha/api/siteverify', {
-      json: {
-        secret: '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ',
-        response: req.body,
-      },
+      json: payload,
       responseType: 'json',
     });
 
