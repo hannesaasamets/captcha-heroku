@@ -12,25 +12,25 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
-app.post('/go-verify', async ({ body: { response } }, res) => {
+app.post('/go-verify', async (req, res) => {
 
   const payload = {
     secret: '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ',
-    response,
+    ...req.body, // response token
   };
   console.log('💼 payload', payload);
 
   try {
     const response = await got.post('https://www.google.com/recaptcha/api/siteverify', {
       json: payload,
-      responseType: 'json',
+      // responseType: 'json',
     });
 
-    console.log(response.body);
+    console.log('response', response);
     return res.json({ response });
   } catch (error) {
-    console.log(error.response);
-    return res.json({ response: error.response });
+    console.log('error', error);
+    return res.json({ error: error });
   }
 
 });
