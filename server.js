@@ -24,6 +24,9 @@ app.post('/go-verify', async (req, res) => {
     const response = await got.post('https://www.google.com/recaptcha/api/siteverify', {
       json: payload,
       responseType: 'json',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
     });
 
     console.log('response', response);
