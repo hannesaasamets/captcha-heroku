@@ -12,11 +12,11 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
-app.post('/go-verify', async (req, res) => {
+app.post('/go-verify', async ({ body }, res) => {
 
   const payload = {
     secret: '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ',
-    ...req.body, // response token
+    ...body, // response token
   };
   console.log('💼 payload', payload);
 
@@ -29,7 +29,7 @@ app.post('/go-verify', async (req, res) => {
     console.log(response.body);
     return res.json({ response });
   } catch (error) {
-    console.log(error.response.body);
+    console.log(error.response);
     return res.json({ response: error.response });
   }
 
