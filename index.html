@@ -18,11 +18,12 @@
       };
 
       const response = await fetch('/go-verify', fetchOptions);
+      const json = response.json();
 
-      console.log('response', response.json());
+      console.log('response', json);
 
       element = document.createElement('h1');
-      element.innerHTML = `You score is ${response.score}`;
+      element.innerHTML = `You score is ${json.score}`;
       document.body.appendChild(element);
     });
   </script>
