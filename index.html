@@ -19,8 +19,11 @@
 
       const response = await fetch('/go-verify', fetchOptions);
 
-      console.log(response.json());
-      console.log(await response.json());
+      console.log('response', response.json());
+
+      element = document.createElement('h1');
+      element.innerHTML = `You score is ${response.score}`;
+      document.body.appendChild(element);
     });
   </script>
   <style>
@@ -30,10 +33,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
     }
   </style>
 </head>
 
 <body>
-<p>Captcha test.a</p>
+<p>reCaptcha v3 test</p>
 </body>
