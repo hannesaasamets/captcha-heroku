@@ -29,7 +29,9 @@ app.post('/go-verify', async (req, res) => {
     });
     const json = await response.json(); // expecting a json response
     console.log('json', json);
+    console.log('---');
     console.log('response', response);
+    console.log('---.');
 
     return await res.json({ response });
   } catch (error) {
