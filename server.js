@@ -20,12 +20,14 @@ app.post('/go-verify', async (req, res) => {
     ...req.body, // response token
   };
   console.log('💼 payload', payload);
+  const body = `secret=${secret}&response=${req.body.response}`;
+  console.log('💼 body', body);
 
   try {
 
     const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
       method: 'POST',
-      body: `secret=${secret}&response=${req.body.response}`,
+      body,
     });
     const json = await response.json(); // expecting a json response
     console.log('json', json);
