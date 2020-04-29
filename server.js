@@ -15,13 +15,8 @@ app.use(bodyParser.json());
 app.post('/go-verify', async (req, res) => {
 
   const secret = '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ';
-  const payload = {
-    secret,
-    ...req.body, // response token
-  };
-  console.log('💼 payload', payload);
   const body = `secret=${secret}&response=${req.body.response}`;
-  console.log('💼 body', body);
+  console.log('💼 body:', body.split('&'));
 
   try {
 
@@ -32,13 +27,10 @@ app.post('/go-verify', async (req, res) => {
       },
       body,
     });
-    const json = await response.json(); // expecting a json response
-    console.log('json', json);
-    console.log('---');
-    console.log('response', response);
-    console.log('---.');
+    const json = await response.json();
+    console.log('---', 'json', json, '---');
 
-    return await res.json({ response });
+    return await res.json({ msg: json });
   } catch (error) {
     console.log('error', error);
 
