@@ -12,7 +12,7 @@ MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
   if (err) throw err;
   console.log('⛱ db', db);
 
-  const dbo = db.db("heroku_7p79fwbh");
+  const dbo = db.db("heroku_j24t8j6g");
   const myobj = { name: "Company Inc", address: "Highway 37" };
   dbo.collection("visits").insertOne(myobj, function(err, res) {
     if (err) throw err;
