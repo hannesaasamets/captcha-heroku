@@ -37,12 +37,16 @@ app.post('/go-verify', async (req, res) => {
     json.success && MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
       if (err) throw err;
       const dbo = db.db(process.env.MONGODB_DATABASE);
-      const myobj = {
-        challenge_ts: json.challenge_ts,
+      const visit = {
         score: json.score,
-        agent: req.headers['user-agent'],
+        browser: `${ua.browser.name} ${ua.browser.major}`,
+        browser_version: ua.browser.version,
+        os: `${ua.os.name} ${ua.os.version}`,
+        engine: `${ua.engine.name} ${ua.engine.version}`,
+        ua: req.headers['user-agent'],
+        challenge_timestamp: json.challenge_ts,
       };
-      dbo.collection("visits").insertOne(myobj, function(err, res) {
+      dbo.collection("visits").insertOne(visit, function(err, res) {
         if (err) throw err;
         console.log("1 document inserted");
         db.close();
