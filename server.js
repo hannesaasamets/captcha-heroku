@@ -33,7 +33,7 @@ app.get('/scores', (req, res) =>
       res.send(outputString);
       db.close();
     });
-  });
+  })
 );
 
 app.post('/go-verify', async (req, res) => {
