@@ -24,9 +24,8 @@
 
       console.log(json);
 
-      element = document.createElement('h1');
-      element.innerHTML = `You score is ${json.score}`;
-      document.body.appendChild(element);
+      element = document.querySelector('h1');
+      element.innerHTML = `Your score is ${json.score}`;
     });
   </script>
   <style>
@@ -44,4 +43,5 @@
 
 <body>
 <p>reCAPTCHA v3 test</p>
+<h1>Your score is …</h1>
 </body>

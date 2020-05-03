@@ -20,17 +20,13 @@ app.get('/scores', (req, res) =>
     var dbo = db.db(process.env.MONGODB_DATABASE);
     dbo.collection("visits").find().toArray(function(err, visits) {
       if (err) throw err;
-      const keys = [
-        'score',
-        'browser',
-        'os',
-      ];
-      const outputString = visits.map(visit =>
-          keys.map(key => visit[key])
-          .join(', ')
-        ).join('\n');
-
-      res.send(outputString);
+      res.json(visits.map(visit =>
+        ({
+          score: visit.score,
+          browser: visit.browser,
+          os: visit.os,
+        })
+      ));
       db.close();
     });
   })
