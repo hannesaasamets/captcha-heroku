@@ -2,8 +2,10 @@
   <script src="https://www.google.com/recaptcha/api.js?render=6LcmG-8UAAAAAKShvWpC_pAGYgKu1xjrJesmAMim"></script>
   <script>
     grecaptcha.ready(async () => {
-      const token = await grecaptcha
-        .execute('6LcmG-8UAAAAAKShvWpC_pAGYgKu1xjrJesmAMim', {action: 'homepage'});
+      const token = await grecaptcha.execute(
+        '6LcmG-8UAAAAAKShvWpC_pAGYgKu1xjrJesmAMim',
+        { action: 'homepage' }
+      );
 
       console.log('token', token);
 
@@ -18,9 +20,13 @@
       };
 
       const response = await fetch('/go-verify', fetchOptions);
+      const json = await response.json();
 
-      console.log(response.json());
-      console.log(await response.json());
+      console.log(json);
+
+      element = document.createElement('h1');
+      element.innerHTML = `You score is ${json.score}`;
+      document.body.appendChild(element);
     });
   </script>
   <style>
@@ -28,12 +34,14 @@
       background: #222;
       color: #ddd;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      height: 100vh;
     }
   </style>
 </head>
 
 <body>
-<p>Captcha test.a</p>
+<p>reCAPTCHA v3 test</p>
 </body>

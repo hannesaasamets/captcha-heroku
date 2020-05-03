@@ -34,23 +34,22 @@ app.use(bodyParser.json());
 app.post('/go-verify', async (req, res) => {
 
   const secret = '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ';
-  const payload = {
-    secret,
-    ...req.body, // response token
-  };
-  console.log('💼 payload', payload);
+  const body = `secret=${secret}&response=${req.body.response}`;
+  console.log('💼 body:', body.split('&'));
 
   try {
 
     const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
       method: 'POST',
-      body: `secret=${secret}&response=${req.body.response}`,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body,
     });
-    const json = await response.json(); // expecting a json response
-    console.log('json', json);
-    console.log('response', response);
+    const json = await response.json();
+    console.log('---', 'json', json, '---');
 
-    return await res.json({ response });
+    return await res.json(json);
   } catch (error) {
     console.log('error', error);
 
