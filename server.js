@@ -14,6 +14,28 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
+app.get('/scores', (req, res) =>
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("heroku_j24t8j6g");
+    dbo.collection("visits").find().toArray(function(err, visits) {
+      if (err) throw err;
+      const keys = [
+        'score',
+        'browser',
+        'os',
+      ];
+      const outputString = visits.map(visit =>
+          keys.map(key => visit[key])
+          .join(', ')
+        ).join('\n');
+
+      res.send(outputString);
+      db.close();
+    });
+  });
+);
+
 app.post('/go-verify', async (req, res) => {
 
   const body = `secret=${process.env.CAPTCHA_SECRET}&response=${req.body.response}`;
@@ -64,10 +86,6 @@ app.post('/go-verify', async (req, res) => {
 
 app.use('/', (req, res) =>
   res.sendFile(path.join(__dirname, './index.html'))
-);
-
-app.use('/scores', (req, res) =>
-  res.text('some text')
 );
 
 app.listen(PORT, () => {
