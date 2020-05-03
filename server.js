@@ -66,6 +66,10 @@ app.use('/', (req, res) =>
   res.sendFile(path.join(__dirname, './index.html'))
 );
 
+app.use('/scores', (req, res) =>
+  res.text('some text')
+);
+
 app.listen(PORT, () => {
   console.log(`🍏 Listening on ${PORT}`);
 });
