@@ -15,9 +15,9 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.get('/scores', (req, res) =>
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
     if (err) throw err;
-    var dbo = db.db("heroku_j24t8j6g");
+    var dbo = db.db(process.env.MONGODB_DATABASE);
     dbo.collection("visits").find().toArray(function(err, visits) {
       if (err) throw err;
       const keys = [
