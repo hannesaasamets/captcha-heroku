@@ -5,22 +5,7 @@ const {PORT = 3333} = process.env;
 const app = express();
 const fetch = require('node-fetch');
 const { MongoClient } = require('mongodb');
-
-console.log('process.env.MONGODB_URI.length', process.env.MONGODB_URI.length);
-
-MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
-  if (err) throw err;
-  const dbo = db.db("heroku_j24t8j6g");
-  const myobj = { name: "Company Inc", address: "Highway 37" };
-  dbo.collection("visits").insertOne(myobj, function(err, res) {
-    if (err) throw err;
-    console.log("1 document inserted");
-    db.close();
-  });
-});
-
-
-
+const uaParser = require('ua-parser-js');
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -31,12 +16,13 @@ app.use(bodyParser.json());
 
 app.post('/go-verify', async (req, res) => {
 
-  console.log('process.env.CAPTCHA_SECRET.length', process.env.CAPTCHA_SECRET.length);
-
   const body = `secret=${process.env.CAPTCHA_SECRET}&response=${req.body.response}`;
   console.log('💼 body:', body.split('&'));
 
   try {
+
+    const ua = uaParser(req.headers['user-agent']);
+    console.log('user-agent', ua);
 
     const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
       method: 'POST',
@@ -47,6 +33,21 @@ app.post('/go-verify', async (req, res) => {
     });
     const json = await response.json();
     console.log('---', 'json', json, '---');
+
+    json.success && MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
+      if (err) throw err;
+      const dbo = db.db(process.env.MONGODB_DATABASE);
+      const myobj = {
+        challenge_ts: json.challenge_ts,
+        score: json.score,
+        agent: req.headers['user-agent'],
+      };
+      dbo.collection("visits").insertOne(myobj, function(err, res) {
+        if (err) throw err;
+        console.log("1 document inserted");
+        db.close();
+      });
+    });
 
     return await res.json(json);
   } catch (error) {

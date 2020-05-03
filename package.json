@@ -11,6 +11,7 @@
     "express": "^4.16.4",
     "mongodb": "^3.5.7",
     "node-fetch": "^2.6.0",
+    "ua-parser-js": "^0.7.21",
     "vue": "^2.5.2"
   },
   "engines": {
