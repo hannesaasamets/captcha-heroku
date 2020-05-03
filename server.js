@@ -31,8 +31,9 @@ app.use(bodyParser.json());
 
 app.post('/go-verify', async (req, res) => {
 
-  const secret = '6LcmG-8UAAAAAP8fnWQFegWmC-vOc2Es8tVwF2OQ';
-  const body = `secret=${secret}&response=${req.body.response}`;
+  console.log('process.env.CAPTCHA_SECRET.length', process.env.CAPTCHA_SECRET.length);
+
+  const body = `secret=${process.env.CAPTCHA_SECRET}&response=${req.body.response}`;
   console.log('💼 body:', body.split('&'));
 
   try {
