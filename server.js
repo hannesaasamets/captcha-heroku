@@ -6,6 +6,8 @@ const app = express();
 const fetch = require('node-fetch');
 const { MongoClient } = require('mongodb');
 const uaParser = require('ua-parser-js');
+const afterLastSlash = /[^/]+$/;
+const MONGODB_DATABASE = process.env.MONGODB_URI.match(afterLastSlash)[0];
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -31,11 +33,10 @@ const collapseDuplicates = (arrOfObj) => {
 
   return Object.values(objWithUniqueKeys);
 };
-
 app.get('/scores', (req, res) =>
   MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
     if (err) throw err;
-    var dbo = db.db(process.env.MONGODB_DATABASE);
+    var dbo = db.db(MONGODB_DATABASE);
     dbo.collection("visits").find().toArray((err, visits) => {
       if (err) throw err;
       const collapsedVisits = collapseDuplicates(visits);
@@ -77,7 +78,7 @@ app.post('/go-verify', async (req, res) => {
 
     json.success && MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
       if (err) throw err;
-      const dbo = db.db(process.env.MONGODB_DATABASE);
+      const dbo = db.db(MONGODB_DATABASE);
       const visit = {
         score: json.score,
         browser: `${ua.browser.name} ${ua.browser.major}`,
