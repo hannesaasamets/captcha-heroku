@@ -14,19 +14,42 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 
+const collapseDuplicates = (arrOfObj) => {
+  const objWithUniqueKeys = arrOfObj.reduce((acc, obj) => {
+    const {_id, challenge_timestamp, ...staticEntries} = obj;
+    const key = JSON.stringify(staticEntries);
+
+    acc[key] = {
+      ...staticEntries,
+      _id: obj._id,
+      challenge_timestamp: obj.challenge_timestamp,
+      duplicates: (acc[key] && acc[key].duplicates + 1) || 1,
+    };
+
+    return acc;
+  }, {});
+
+  return Object.values(objWithUniqueKeys);
+};
+
 app.get('/scores', (req, res) =>
   MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
     if (err) throw err;
     var dbo = db.db(process.env.MONGODB_DATABASE);
-    dbo.collection("visits").find().toArray(function(err, visits) {
+    dbo.collection("visits").find().toArray((err, visits) => {
       if (err) throw err;
-      res.json(visits.map(visit =>
+      const collapsedVisits = collapseDuplicates(visits);
+      const resJson = collapsedVisits.map(({ score, browser, os, duplicates }) =>
         ({
-          score: visit.score,
-          browser: visit.browser,
-          os: visit.os,
+          score,
+          browser,
+          os,
+          ...(duplicates > 1 && {
+            duplicates,
+          }),
         })
-      ));
+      );
+      res.json(resJson);
       db.close();
     });
   })
